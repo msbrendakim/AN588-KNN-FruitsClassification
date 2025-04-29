@@ -98,7 +98,33 @@ print(paste("Predicted label:", predicted_label))
 
 ## 🤖 Choosing K, kNN Cross Validation
 
-The choice of K significantly affects the algorithm's performance. A small K can lead to overfitting (sensitive to noise in the data), while a large K can smooth out the decision boundary, possibly underfitting. Therefore, kNN cross-validation is often used to find the optimal K. Now, let's try multiple K values and use cross-validation.
+In KNN, choosing the right value of K (the number of neighbors) is extremely important because it controls the model’s complexity:
+
+-   **Small K (Risk of overfitting):**
+
+    1.  The model becomes **very sensitive to noise** and small fluctuations in the data.
+    2.  It may fit **outliers** and **mistakes** in the training set.
+    3.  This can cause **overfitting**, where the model memorizes the training data too closely but performs poorly on new, unseen data.
+
+-   **Large K (Risk of underfitting.):**
+
+    1.  The model looks at **more neighbors** and becomes **more stable** and **smoother**.
+
+    2.  It may **ignore important local patterns** by averaging too much.
+
+    3.  This can cause **underfitting**, where the model is too simple and cannot capture the complexity of the data.
+
+Thus, **choosing the best K is a balance** between overfitting and underfitting. Cross-validation is often used to find the optimal K. 
+
+#### **Why use Cross-Validation to choose K?**
+
+-   You cannot just guess the best K value.
+
+-   **Cross-validation** helps systematically test different K values on parts of the data not used for training, simulating how the model would perform on truly unseen data.
+
+-   You typically try a **range of K values** (e.g., from 1 to 20) and select the one that gives the **highest validation accuracy**.
+
+Therefore, try multiple K values and use cross-validation, this is the most common and reliable method.
 
 #### Example codes
 
@@ -167,7 +193,7 @@ Before we model, we need to understand our data. The summary(fruit_data) output 
 
 The table(fruit_data\$fruit_name) output shows we have 19 apples, 16 lemons, 5 mandarins, and 19 oranges. Notice mandarins are underrepresented with only 5 samples, which might make them harder to classify accurately compared to apples or oranges.
 
-The scatterplot plots width versus height, with each point colored differently. When you look at this plot, you might see mandarins clustering in one area (maybe smaller and shorter) and lemons in another (taller and narrower). If the fruit types form distinct clusters, that’s a great sign for KNN, because it relies on nearby points being similar. But if points overlap a lot, like apples blending with oranges, KNN might struggle to separate them. This plot gives us a first look at whether our features (width and height) are good for distinguishing fruits, and it hints that mass and color score might add even more separation.
+The scatterplot plots width versus height, with each point colored differently. When you look at this plot, you might see mandarins clustering in one area (shorter and narrower) and lemons in another (taller and narrower). If the fruit types form distinct clusters, that’s a great sign for KNN, because it relies on nearby points being similar. But if points overlap a lot, like apples blending with oranges, KNN might struggle to separate them. This plot gives us a first look at whether our features (width and height) are good for distinguishing fruits, and it hints that mass and color score might add even more separation.
 
 #### Feature Normalization and Splitting
 
@@ -208,7 +234,7 @@ best_k <- max(good_k)
 cat("Best K (within 0.02 of max accuracy):", best_k, "\n")
 ```
 
-We test K values (1, 3, 5, ..., 15) to find the best number of neighbors. For each K, knn predicts test set labels, and we compute accuracy. The plot shows accuracy versus K. Instead of picking the absolute highest accuracy (K=1, 1.0), we select the largest K where accuracy is within 0.02 of the maximum, prioritizing robustness. This gives us K=7, with an accuracy of \~0.98.
+We test K values (1, 3, 5, ..., 15) to find the best number of neighbors. For each K, knn predicts test set labels, and we compute accuracy. The plot shows accuracy versus K. We pick the absolute highest accuracy (K=7, 1.0), with an accuracy of \~0.98.
 
 The plot also shows accuracy peaking at K=1 (1.0), but K=1 risks overfitting. K=7, with an accuracy of \~0.98, is a better choice for a fruit sorting system, as it uses 7 neighbors, reducing sensitivity to noise while maintaining high accuracy. This means we might misclassify 1 out of \~18 test fruits, but the model will generalize better to new fruits.
 
@@ -251,7 +277,7 @@ ggplot(cm_df, aes(x = Reference, y = Prediction, fill = Freq)) +
 
 We use best_k (K=7) to run our final KNN model with knn, making predictions on the test set (final_pred). The confusionMatrix compares these predictions to test_y, giving us a table of correct and incorrect classifications. We also compute precision, recall, and F1-score per class. Precision is how often our “apple” predictions are correct; recall is how many actual apples we identified; F1 balances both. Finally, we create a heatmap of the confusion matrix, mapping numeric labels (1, 2, 3, 4) to fruit names (apple, lemon, mandarin, orange) for clarity.
 
-The metrics table shows perfect scores (1.0 for precision, recall, and F1) for all classes. This looks amazing, but it’s suspicious! Perfect scores often mean the test set is too small (only \~18 fruits with 30% of 59) or the data is too clean, making K=1 work flawlessly. In a real fruit sorting system, new fruits might have more variability (e.g., bruised apples), so this perfection might not hold. The heatmap confirms this: the diagonal (correct predictions, like apple predicted as apple) has all the counts, and off-diagonal cells (mistakes) are zero. This suggests our model nailed the test set, but we should be cautious—it might not generalize to new fruits. For example, mandarins, with only 5 samples, might be overfitted, as there’s little data to learn from.
+The metrics table shows perfect scores (1.0 for precision, recall, and F1) for all classes. This looks amazing, but it’s suspicious! Perfect scores often mean the test set is too small (only \~18 fruits with 30% of 59) or the data is too clean, making the work flawlessly. In a real fruit sorting system, new fruits might have more variability (e.g., bruised apples), so this perfection might not hold. The heatmap confirms this: the diagonal (correct predictions, like apple predicted as apple) has all the counts, and off-diagonal cells (mistakes) are zero. This suggests our model nailed the test set, but we should be cautious—it might not generalize to new fruits. For example, mandarins, with only 5 samples, might be overfitted, as there’s little data to learn from.
 
 #### 🔀 Model Comparison: KNN vs Logistic Regression
 
@@ -327,27 +353,21 @@ cat("Prediction:", mystery_pred)
 cat("Confidence:", attr(mystery_pred, "prob"))
 ```
 
-Finally, we classify a mystery fruit with mass=160g, width=7.2, height=7.5, and color_score=0.76. We normalize it using the same preproc object to match our training data’s scale, then run knn with best_k=1. The prob=TRUE gives us the confidence (proportion of votes for the predicted class).
+Finally, we classify a mystery fruit with mass=160g, width=7.2, height=7.5, and color_score=0.76. We normalize it using the same preproc object to match our training data’s scale, then run knn with best_k=7.
 
-The prediction is 3, which maps to “mandarin” (based on label_map). The confidence is 1.0, meaning the closest neighbor (since K=1) is definitely a mandarin. This makes sense if the mystery fruit’s features are very close to a mandarin in the training set, but K=1 means we’re betting everything on one neighbor. In a real-world scenario, like a fruit sorting machine, we’d want a higher K for reliability, as one odd fruit could throw us off. This result shows KNN’s power for quick predictions but also highlights the risk of overfitting with a small K.
+The prediction is 3, which maps to “mandarin” (based on label_map). The confidence is approximately 0.86, meaning the closest neighbor (since K=7) is 86% a mandarin. In a real-world scenario, like a fruit sorting machine, we’d want a higher K for reliability, as one odd fruit could throw us off. This result shows KNN’s power for quick predictions but also highlights the risk of overfitting with a small K.
 
 ------------------------------------------------------------------------
 
 ## 🆚 KNN vs. K-Means
 
-+---------------+----------------------------------+----------------------------------+
-| Feature       | KNN                              | K-Means                          |
-+===============+==================================+==================================+
-| Supervised?   | Yes                              | No                               |
-+---------------+----------------------------------+----------------------------------+
-| Used For      | Classification / Regression      | Clustering                       |
-+---------------+----------------------------------+----------------------------------+
-| Distance Use  | Classify based on neighbors      | Assign to closest centroid       |
-+---------------+----------------------------------+----------------------------------+
-| Label Needed? | Yes                              | No                               |
-+---------------+----------------------------------+----------------------------------+
-| Type          | Lazy Learner (no training phase) | Iterative optimization algorithm |
-+---------------+----------------------------------+----------------------------------+
+| Feature | KNN | K-Means |
+|----|----|----|
+| Supervised? | Yes | No |
+| Used For | Classification / Regression | Clustering |
+| Distance Use | Classify based on neighbors | Assign to closest centroid |
+| Label Needed? | Yes | No |
+| Type | Lazy Learner (no training phase) | Iterative optimization algorithm |
 
 ------------------------------------------------------------------------
 
@@ -387,17 +407,12 @@ However, its limitations in terms of: - Computational cost (especially with larg
 
 -   Try **changing the distance metric** (e.g., Manhattan, cosine) and evaluate impact.
 
-    +--------------------+----------------------------------------------------------------------------+
-    | Distance Type      | When to use                                                                |
-    +====================+============================================================================+
-    | Euclidean Distance | Continuous, real-valued features (e.g., height, weight, income)            |
-    +--------------------+----------------------------------------------------------------------------+
-    | Manhattan Distance | Grid-like spaces (e.g., city blocks)                                       |
-    +--------------------+----------------------------------------------------------------------------+
-    | Cosine Similarity  | When you care about **direction** more than **distance** (e.g., text data) |
-    +--------------------+----------------------------------------------------------------------------+
-    | Hamming Distance   | Categorical data (e.g., bit strings)                                       |
-    +--------------------+----------------------------------------------------------------------------+
+    | Distance Type | When to use |
+    |----|----|
+    | Euclidean Distance | Continuous, real-valued features (e.g., height, weight, income) |
+    | Manhattan Distance | Grid-like spaces (e.g., city blocks) |
+    | Cosine Similarity | When you care about **direction** more than **distance** (e.g., text data) |
+    | Hamming Distance | Categorical data (e.g., bit strings) |
 
 -   Apply **dimensionality reduction** techniques like PCA to see how performance and interpretability are affected.
 
