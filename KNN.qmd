@@ -9,13 +9,13 @@ In this module, we will explore how the **K-Nearest Neighbors (KNN)** algorithm 
 
 ## 🔎 Introduction to KNN
 
-KNN is an algorithm that can be used to make sorting more efficient. It works by taking in data points on a subject and predicting the classification of a new subject based on the data that’s already given. For a certain data point, it looks at the “K” nearest points in the training data (K is a defined number by the user) and the point in question is assigned to the most common class or average value of the neighbors in the training set.
+KNN is an algorithm that can be used to make sorting more efficient. It works by taking in data points on a subject and predicting the classification of a new subject based on the data that’s already given. For a certain data point, it looks at the **“K” nearest points** in the training data (K is a defined number by the user) and the point in question is assigned to the **most common class or average value of the neighbors in the training set.**
 
-Instead of creating a complicated model, KNN stores all the data and waits until a prediction needs to be made. When a new, unknown data point is introduced, KNN calculates the distance between this point and every other point in the dataset. It then identifies the “K” closest points (K is a number chosen by the user) and uses those neighbors to predict the new point’s category or value.
+Instead of creating a complicated model, KNN stores all the data and waits until a prediction needs to be made. When a new, unknown data point is introduced, KNN calculates the **distance between this point and every other point** in the dataset. It then identifies the “K” closest points (K is a number chosen by the user) and uses those neighbors to predict the new point’s category or value.
 
-The basic idea behind KNN is that similar things are found near each other. For a classification task, once the K nearest neighbors are found, the new point is assigned to the class that appears most frequently among them.
+The basic idea behind KNN is that **similar things are found near each other.** For a classification task, once the K nearest neighbors are found, the new point is assigned to the class that appears most frequently among them.
 
-If it’s a regression task, meaning you want to predict a number instead of a category, the new point’s value is usually the average of the neighboring values. KNN is called a “lazy learner” because it doesn’t do any actual learning until it’s time to make a prediction. It relies entirely on the structure of the data it’s given.
+If it’s a **regression** task, meaning you want to predict a number instead of a category, the new point’s value is usually the average of the neighboring values. KNN is called a **“lazy learner”** because it doesn’t do any actual learning until it’s time to make a prediction. It relies entirely on the structure of the data it’s given.
 
 This can be applied to different types of sorting, like fruit sorting. For example, if you input data on the characteristics of a certain set of fruits (height, weight, mass etc.), based on this data point you can use KNN to determine the distance from this point and a new “mystery fruit”. So, based on known data points on the characteristics of apples, you can determine if your new “mystery fruit” is an apple or an orange based on how it fits into your identified data points.
 
@@ -132,7 +132,7 @@ print(paste("Predicted label:", predicted_label))
 
 ## 🥝 Real Dataset: Fruit Sorting with KNN
 
-Now we're going to apply the KNN algorithm to a real dataset. We've learned the theoretical aspects so far, but now let's see how it actually works in practice!
+Now we're going to apply the KNN algorithm to a real dataset. We've learned the theoretical aspects so far, but now let's see how it actually works in practice! We’ll walk through the code step-by-step, interpret outputs like scatterplots, accuracy plots, and confusion matrices, and answer key questions like: What’s a confusion matrix? Why normalize data? Why split it? And why compare models?
 
 #### Dataset Loading and Setup
 
@@ -149,9 +149,7 @@ fruit_data$fruit_label <- as.factor(fruit_data$fruit_label)
 fruit_data$fruit_name <- as.factor(fruit_data$fruit_name)
 ```
 
-Alright, let’s start by loading our fruit dataset. `The fruit_data_with_colors.txt` file contains measurements like mass, width, height, and color score for fruits. We use `read.delim` with `sep="\t"` because it’s a tab-separated file.
-
-We convert `fruit_label` and fruit_name to factors with `as.factor`. This is key because KNN is a classification algorithm, and factors tell R these are categories (e.g., apple, orange) rather than numbers or text.
+We start by loading our fruit dataset, stored in fruit_data_with_colors.txt, a tab-separated file with measurements like mass and color score. Here, we convert fruit_label and fruit_name to factors, which tells R these are categories (e.g., apple, orange), not numbers. This is crucial for KNN, a classification algorithm that assigns categories based on nearby points.
 
 #### Data Exploration
 
@@ -189,9 +187,7 @@ test_y <- fruit_data$fruit_label[-train_idx]
 
 Here, we’re prepping our data for KNN. We select our features—mass, width, height, and color score—into features. Since KNN calculates distances, we need to normalize these features because they’re on different scales (e.g., mass in grams vs. color score from 0 to 1). The preProcess function with method = c("center", "scale") standardizes each feature to have a mean of 0 and a standard deviation of 1, and predict(preproc, features) applies this to get features_scaled.
 
-Then, we split the data into 70% training and 30% testing sets using createDataPartition. The set.seed(123) ensures our split is reproducible, and the split keeps the fruit classes balanced. train_x and train_y are our training features and labels, while test_x and test_y are for testing. This lets us train our model and test it on unseen data to check its generalization.
-
-Output Interpretation: There’s no direct output here, but normalization is critical. Without it, mass would dominate distance calculations, making color score irrelevant. This step ensures all features contribute equally, which is key for accurate fruit classification.
+Then, we split the data into 70% training and 30% testing sets using createDataPartition. This tests how well our model generalizes to unseen data, mimicking real-world scenarios where new fruits arrive. The set.seed(123) ensures our split is reproducible, and the split keeps the fruit classes balanced. train_x and train_y are our training features and labels, while test_x and test_y are for testing. This lets us train our model and test it on unseen data to check its generalization.
 
 #### Model Evaluation: Choosing Best K
 
@@ -204,12 +200,17 @@ accuracy_list <- sapply(k_values, function(k) {
 
 plot(k_values, accuracy_list, type = "b", col = "blue", pch = 19,
      xlab = "K", ylab = "Accuracy", main = "KNN Accuracy by K")
-(best_k <- k_values[which.max(accuracy_list)])
+
+max_accuracy <- max(accuracy_list)
+threshold <- 0.02
+good_k <- k_values[accuracy_list >= (max_accuracy - threshold)]
+best_k <- max(good_k)
+cat("Best K (within 0.02 of max accuracy):", best_k, "\n")
 ```
 
-Now we’re picking the best K—the number of neighbors KNN considers. We test K values from 1 to 15 (odd numbers: 1, 3, 5, ..., 15) using sapply. For each K, we run knn on the test set, compare predictions to test_y, and calculate accuracy (the fraction of correct predictions). The plot visualizes K versus accuracy, and which.max picks the K with the highest accuracy, stored in best_k.
+We test K values (1, 3, 5, ..., 15) to find the best number of neighbors. For each K, knn predicts test set labels, and we compute accuracy. The plot shows accuracy versus K. Instead of picking the absolute highest accuracy (K=1, 1.0), we select the largest K where accuracy is within 0.02 of the maximum, prioritizing robustness. This gives us K=7, with an accuracy of \~0.98.
 
-Output Interpretation: The accuracy plot shows how performance changes with K. The output says best_k = 1, meaning K=1 gives the highest accuracy. But here’s a red flag: K=1 means we’re only looking at the closest neighbor, which can make the model overly sensitive to noise or outliers, potentially overfitting. If the plot shows accuracy dropping as K increases, it suggests our test set might be small or the data is very clean and well-separated. In a real-world fruit sorting system, we’d be cautious about K=1 because new fruits might not match so perfectly. We might prefer a slightly higher K (like 3 or 5) for robustness, even if accuracy dips a bit.
+The plot also shows accuracy peaking at K=1 (1.0), but K=1 risks overfitting. K=7, with an accuracy of \~0.98, is a better choice for a fruit sorting system, as it uses 7 neighbors, reducing sensitivity to noise while maintaining high accuracy. This means we might misclassify 1 out of \~18 test fruits, but the model will generalize better to new fruits.
 
 #### Final Model and Confusion Matrix
 
@@ -248,11 +249,13 @@ ggplot(cm_df, aes(x = Reference, y = Prediction, fill = Freq)) +
 
 ```
 
-We use best_k (K=1) to run our final KNN model with knn, making predictions on the test set (final_pred). The confusionMatrix compares these predictions to test_y, giving us a table of correct and incorrect classifications. We also compute precision, recall, and F1-score per class. Precision is how often our “apple” predictions are correct; recall is how many actual apples we identified; F1 balances both. Finally, we create a heatmap of the confusion matrix, mapping numeric labels (1, 2, 3, 4) to fruit names (apple, lemon, mandarin, orange) for clarity.
+We use best_k (K=7) to run our final KNN model with knn, making predictions on the test set (final_pred). The confusionMatrix compares these predictions to test_y, giving us a table of correct and incorrect classifications. We also compute precision, recall, and F1-score per class. Precision is how often our “apple” predictions are correct; recall is how many actual apples we identified; F1 balances both. Finally, we create a heatmap of the confusion matrix, mapping numeric labels (1, 2, 3, 4) to fruit names (apple, lemon, mandarin, orange) for clarity.
 
 The metrics table shows perfect scores (1.0 for precision, recall, and F1) for all classes. This looks amazing, but it’s suspicious! Perfect scores often mean the test set is too small (only \~18 fruits with 30% of 59) or the data is too clean, making K=1 work flawlessly. In a real fruit sorting system, new fruits might have more variability (e.g., bruised apples), so this perfection might not hold. The heatmap confirms this: the diagonal (correct predictions, like apple predicted as apple) has all the counts, and off-diagonal cells (mistakes) are zero. This suggests our model nailed the test set, but we should be cautious—it might not generalize to new fruits. For example, mandarins, with only 5 samples, might be overfitted, as there’s little data to learn from.
 
 #### 🔀 Model Comparison: KNN vs Logistic Regression
+
+A model comparison table helps us evaluate which algorithm is best suited for our task.
 
 ```{r}
 library(nnet)  # for multinom()
@@ -297,6 +300,18 @@ comparison_df <- data.frame(
 
 comparison_df
 ```
+
+Seeing the model comparison table, KNN, with an accuracy of 1.0, got all test fruits correct, while logistic regression, with 0.8 accuracy, got 14–15 out of 18 correct.
+
+Kappa measures agreement between predicted and actual labels, adjusted for chance. A Kappa of 1.0 (KNN) means perfect agreement, while 0.7151 (logistic regression) indicates good but not perfect agreement, likely due to errors in smaller classes like mandarins, where chance agreement is lower.
+
+You might be wondering, “*How did KNN get a perfect score like this?*”
+
+-   KNN classifies fruits by finding the 7 nearest neighbors in feature space (mass, width, height, color score). Our dataset is small (59 fruits, \~18 in the test set), and the scatterplot showed distinct clusters (e.g., apples vs. lemons). With K=7, KNN likely found clear majorities for each test fruit, leading to perfect predictions. However, the earlier accuracy plot showed \~0.98 for K=7, so this perfect 1.0 suggests either a different random split or a very small test set where K=7 happened to align perfectly.
+
+-   Logistic regression assumes linear boundaries between classes. If mandarins and oranges overlap in size or color score, it might misclassify them, leading to errors (e.g., 3–4 misclassifications for 0.8 accuracy). Its Kappa of 0.7151 shows it’s still decent but struggles with non-linear patterns, which KNN handles better.
+
+-   With only \~18 test fruits, small changes in predictions have a big impact. KNN getting 18/18 correct gives 1.0, while logistic regression getting 14/18 gives 0.8—a difference of just 4 fruits but a large gap in percentage. This highlights the risk of overfitting with KNN, especially on a small dataset.
 
 ------------------------------------------------------------------------
 
@@ -371,7 +386,21 @@ However, its limitations in terms of: - Computational cost (especially with larg
 ### Future Directions:
 
 -   Try **changing the distance metric** (e.g., Manhattan, cosine) and evaluate impact.
+
+    +--------------------+----------------------------------------------------------------------------+
+    | Distance Type      | When to use                                                                |
+    +====================+============================================================================+
+    | Euclidean Distance | Continuous, real-valued features (e.g., height, weight, income)            |
+    +--------------------+----------------------------------------------------------------------------+
+    | Manhattan Distance | Grid-like spaces (e.g., city blocks)                                       |
+    +--------------------+----------------------------------------------------------------------------+
+    | Cosine Similarity  | When you care about **direction** more than **distance** (e.g., text data) |
+    +--------------------+----------------------------------------------------------------------------+
+    | Hamming Distance   | Categorical data (e.g., bit strings)                                       |
+    +--------------------+----------------------------------------------------------------------------+
+
 -   Apply **dimensionality reduction** techniques like PCA to see how performance and interpretability are affected.
+
 -   Compare KNN with other classifiers such as Decision Trees, Random Forests, or SVMs for larger datasets or more complex feature spaces.
 
 In summary, KNN provides a solid foundation for understanding proximity-based machine learning and offers valuable intuition for feature-space dynamics in classification tasks.
