@@ -100,10 +100,31 @@ window.Quarto = {
 
 </head>
 
-<body class="fullcontent">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction-to-knn" id="toc-introduction-to-knn" class="nav-link active" data-scroll-target="#introduction-to-knn">🔎 Introduction to KNN</a></li>
+  <li><a href="#how-knn-works-core-steps-of-knn" id="toc-how-knn-works-core-steps-of-knn" class="nav-link" data-scroll-target="#how-knn-works-core-steps-of-knn">📌 How KNN Works? Core Steps of KNN</a></li>
+  <li><a href="#euclidean-distance" id="toc-euclidean-distance" class="nav-link" data-scroll-target="#euclidean-distance">📚 Euclidean Distance</a></li>
+  <li><a href="#choosing-k-knn-cross-validation" id="toc-choosing-k-knn-cross-validation" class="nav-link" data-scroll-target="#choosing-k-knn-cross-validation">🤖 Choosing K, kNN Cross Validation</a></li>
+  <li><a href="#real-dataset-fruit-sorting-with-knn" id="toc-real-dataset-fruit-sorting-with-knn" class="nav-link" data-scroll-target="#real-dataset-fruit-sorting-with-knn">🥝 Real Dataset: Fruit Sorting with KNN</a></li>
+  <li><a href="#knn-vs.-k-means" id="toc-knn-vs.-k-means" class="nav-link" data-scroll-target="#knn-vs.-k-means">🆚 KNN vs.&nbsp;K-Means</a></li>
+  <li><a href="#strengths-and-limitations" id="toc-strengths-and-limitations" class="nav-link" data-scroll-target="#strengths-and-limitations">❗ Strengths and Limitations</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">✅ Conclusion</a>
+  <ul class="collapse">
+  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways">Key Takeaways:</a></li>
+  <li><a href="#when-to-use-knn" id="toc-when-to-use-knn" class="nav-link" data-scroll-target="#when-to-use-knn">When to Use KNN:</a></li>
+  <li><a href="#future-directions" id="toc-future-directions" class="nav-link" data-scroll-target="#future-directions">Future Directions:</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -125,21 +146,30 @@ window.Quarto = {
 </header>
 
 
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>In this module, we will explore how the <strong>K-Nearest Neighbors (KNN)</strong> algorithm works and apply it to classify fruits using physical characteristics like <strong>mass</strong>, <strong>width</strong>, <strong>height</strong>, and <strong>color score</strong>.</p>
-<p>KNN is a simple yet powerful algorithm for <strong>classification</strong> and <strong>regression</strong> that uses the proximity of data points to make predictions.</p>
+<section id="introduction-to-knn" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-knn">🔎 Introduction to KNN</h2>
+<p>KNN is an algorithm that can be used to make sorting more efficient. It works by taking in data points on a subject and predicting the classification of a new subject based on the data that’s already given. For a certain data point, it looks at the “K” nearest points in the training data (K is a defined number by the user) and the point in question is assigned to the most common class or average value of the neighbors in the training set.</p>
+<p>Instead of creating a complicated model, KNN stores all the data and waits until a prediction needs to be made. When a new, unknown data point is introduced, KNN calculates the distance between this point and every other point in the dataset. It then identifies the “K” closest points (K is a number chosen by the user) and uses those neighbors to predict the new point’s category or value.</p>
+<p>The basic idea behind KNN is that similar things are found near each other. For a classification task, once the K nearest neighbors are found, the new point is assigned to the class that appears most frequently among them.</p>
+<p>If it’s a regression task, meaning you want to predict a number instead of a category, the new point’s value is usually the average of the neighboring values. KNN is called a “lazy learner” because it doesn’t do any actual learning until it’s time to make a prediction. It relies entirely on the structure of the data it’s given.</p>
+<p>This can be applied to different types of sorting, like fruit sorting. For example, if you input data on the characteristics of a certain set of fruits (height, weight, mass etc.), based on this data point you can use KNN to determine the distance from this point and a new “mystery fruit”. So, based on known data points on the characteristics of apples, you can determine if your new “mystery fruit” is an apple or an orange based on how it fits into your identified data points.</p>
+<p>So, if you input measurements for apples, oranges, and bananas, and then measure a new “mystery fruit,” KNN can find the fruits most similar to it based on those characteristics. If, say, four of the five nearest fruits are apples, the mystery fruit would likely be classified as an apple too. In this way, KNN makes it easy to sort new items based on known examples without having to build a complex model ahead of time.</p>
+<p>KNN is also called a lazy learner because it simply stores data can just make decisions when needed. That can make it easy to set up for predictions but not very efficient at making predictions for larger data sets.</p>
+<p>It’s especially useful for problems where you expect that similar inputs should have similar outputs (like fruits!), and it’s flexible enough to be used in a variety of real-world situations. It’s often used by streaming services, like Amazon, Netflix, or Hulu, to gage what kind of shows users prefer. In healthcare, KNN can help predict medical diagnoses by comparing a patient’s symptoms to past cases by indentifying similar symptoms. It has also been used in various instances of image recognition, like identifying handwritten numbers or objects in photos, and in banking, where it can spot unusual transactions that might be fraud.</p>
 <hr>
 </section>
-<section id="how-knn-works" class="level2">
-<h2 class="anchored" data-anchor-id="how-knn-works">How KNN Works</h2>
-<section id="core-steps" class="level3">
-<h3 class="anchored" data-anchor-id="core-steps">📌 Core Steps</h3>
+<section id="how-knn-works-core-steps-of-knn" class="level2">
+<h2 class="anchored" data-anchor-id="how-knn-works-core-steps-of-knn">📌 How KNN Works? Core Steps of KNN</h2>
 <ol type="1">
-<li><strong>Choose</strong> the number of neighbors <code>K</code> (usually an odd number like 3, 5, or 7).</li>
-<li><strong>Calculate</strong> distance (e.g., Euclidean) from the new point to all existing data points.</li>
-<li><strong>Identify</strong> the <code>K</code> closest neighbors.</li>
-<li><strong>Predict</strong> by majority vote (for classification) or average value (for regression).</li>
+<li><p><strong>Choose</strong> the number of neighbors <code>K</code> (usually an odd number like 3, 5, or 7).</p>
+<p>The first thing you do is pick how many neighbors you want the algorithm to consider when it makes a prediction. K is just a positive whole number, like 3, 5, or 7. Most people go with an odd number to avoid ties when you’re voting on the most common class, so you don’t end up with a tie as to what your result is. A popular trick is to use the square root of the total number of data points in your dataset to pick K. A smaller K means the model is more sensitive to little changes and might get thrown off by outliers. A bigger K value smooths things out a bit more and makes the model more stable, but if K is too large, it can start blending things together that maybe shouldn’t be. So picking the right K really depends on the data.</p></li>
+<li><p><strong>Calculate</strong> distance (e.g., Euclidean) from the new point to all existing data points.</p>
+<p>Once you’ve chosen K, the next step is to figure out how close your new, unknown data point is to all the other points in your training data. This is where distance metrics come in. The most common one is Euclidean distance, which is just the straight-line distance between two points. You could also use Manhattan distance, which moves along a grid, or Minkowski distance, which is a more general formula. Essentially, you’re measuring how similar or different the new point is from everything else ㅁbased on the features you’re tracking, like weight, height, or whatever.</p></li>
+<li><p><strong>Identify</strong> the <code>K</code> closest neighbors.</p>
+<p>Once all the distances are calculated, you sort the training data by how close each point is to your new one. Then you just take the K points that are closest. These are the neighbors that are going to help decide what label or value the new point gets. The idea is that points that are close together in this space are likely to be similar.</p></li>
+<li><p><strong>Predict</strong> by majority vote (for classification) or average value (for regression).</p>
+<p>Now that you have your K neighbors, you use them to actually make a prediction. If you’re doing classification, you look at the labels of the K neighbors and go with the one that shows up the most. Like if you’re trying to classify a mystery fruit and 3 of the 5 nearest neighbors are apples, then you’ll probably call it an apple. If you’re doing regression, which is when you’re trying to predict a number, you just take the average of the neighbors’ values and use that as your prediction for the new point.</p></li>
 </ol>
 <blockquote class="blockquote">
 <p><strong>Example:</strong><br>
@@ -147,38 +177,83 @@ If you’re given data on the size and color of known apples, oranges, lemons, e
 </blockquote>
 <hr>
 </section>
-</section>
 <section id="euclidean-distance" class="level2">
-<h2 class="anchored" data-anchor-id="euclidean-distance">Euclidean Distance</h2>
-<p>KNN relies heavily on distance. The <strong>Euclidean distance</strong> is most common:</p>
-<p>For two points A = (x₁, y₁) and B = (x₂, y₂), <span class="math inline">\(d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}\)</span></p>
+<h2 class="anchored" data-anchor-id="euclidean-distance">📚 Euclidean Distance</h2>
+<p>KNN relies heavily on distance. The most commonly used metric is Euclidean distance for continuous variables, but you could also use others like Manhattan distance.</p>
+<p>For two points A = (x₁, y₁) and B = (x₂, y₂), <span class="math inline">\(d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}\)</span>, the <strong>Euclidean distance</strong> is: <span class="math inline">\(d(A,B) = \sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2 + ... + (n_1 - n_2)^2}\)</span></p>
 <p>In multi-feature datasets, each feature is a dimension in the space.</p>
+<section id="example-codes" class="level4">
+<h4 class="anchored" data-anchor-id="example-codes">Example Codes</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load necessary package</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("class")  # run this once if not already installed</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(class)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Training data (2D points)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">2</span>, <span class="dv">3</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">3</span>, <span class="dv">1</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">6</span>, <span class="dv">5</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">7</span>, <span class="dv">7</span>), </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Labels for training data</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>))</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># New data point to classify</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">2</span>), <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Run KNN (k = 3)</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>predicted_label <span class="ot">&lt;-</span> <span class="fu">knn</span>(<span class="at">train =</span> X_train, <span class="at">test =</span> X_test, <span class="at">cl =</span> y_train, <span class="at">k =</span> <span class="dv">3</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Output the prediction</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Predicted label:"</span>, predicted_label))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Predicted label: A"</code></pre>
+</div>
+</div>
 <hr>
 </section>
-<section id="knn-in-action-example-codes" class="level2">
-<h2 class="anchored" data-anchor-id="knn-in-action-example-codes">KNN in Action: Example Codes</h2>
-<p>Install package once (if needed) <code>install.packages("class")</code></p>
-<pre><code>library(class)</code></pre>
-<section id="training-data-2d" class="level4">
-<h4 class="anchored" data-anchor-id="training-data-2d">Training data (2D)</h4>
-<pre><code>X_train &lt;- matrix(c(1, 2, 2, 3, 3, 1, 6, 5, 7, 7), ncol = 2, byrow = TRUE)
-
-y_train &lt;- factor(c("A", "A", "A", "B", "B"))</code></pre>
 </section>
-<section id="new-point-to-classify" class="level4">
-<h4 class="anchored" data-anchor-id="new-point-to-classify">New point to classify</h4>
-<pre><code>X_test &lt;- matrix(c(3, 2), ncol = 2)</code></pre>
-</section>
-<section id="run-knn-k-3" class="level4">
-<h4 class="anchored" data-anchor-id="run-knn-k-3">Run KNN (k = 3)</h4>
-<pre><code>predicted_label &lt;- knn(train = X_train, test = X_test, cl = y_train, k = 3)
-
-paste("Predicted label:", predicted_label)</code></pre>
+<section id="choosing-k-knn-cross-validation" class="level2">
+<h2 class="anchored" data-anchor-id="choosing-k-knn-cross-validation">🤖 Choosing K, kNN Cross Validation</h2>
+<p>The choice of K significantly affects the algorithm’s performance. A small K can lead to overfitting (sensitive to noise in the data), while a large K can smooth out the decision boundary, possibly underfitting. Therefore, kNN cross-validation is often used to find the optimal K. Now, let’s try multiple K values and use cross-validation.</p>
+<section id="example-codes-1" class="level4">
+<h4 class="anchored" data-anchor-id="example-codes-1">Example codes</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load necessary package</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("class")  # run this once if not already installed</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(class)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Training data (2D points)</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>X_train <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">2</span>, <span class="dv">3</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">3</span>, <span class="dv">1</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">6</span>, <span class="dv">5</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">7</span>, <span class="dv">7</span>), </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Labels for training data</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>))</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># New data point to classify</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>X_test <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">2</span>), <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Run KNN (k = 3)</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>predicted_label <span class="ot">&lt;-</span> <span class="fu">knn</span>(<span class="at">train =</span> X_train, <span class="at">test =</span> X_test, <span class="at">cl =</span> y_train, <span class="at">k =</span> <span class="dv">3</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Output the prediction</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Predicted label:"</span>, predicted_label))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Predicted label: A"</code></pre>
+</div>
+</div>
 <hr>
 </section>
 </section>
 <section id="real-dataset-fruit-sorting-with-knn" class="level2">
 <h2 class="anchored" data-anchor-id="real-dataset-fruit-sorting-with-knn">🥝 Real Dataset: Fruit Sorting with KNN</h2>
+<p>Now we’re going to apply the KNN algorithm to a real dataset. We’ve learned the theoretical aspects so far, but now let’s see how it actually works in practice!</p>
 <section id="dataset-loading-and-setup" class="level4">
 <h4 class="anchored" data-anchor-id="dataset-loading-and-setup">Dataset Loading and Setup</h4>
 <div class="cell">
@@ -209,6 +284,7 @@ Attaching package: 'dplyr'</code></pre>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>fruit_data<span class="sc">$</span>fruit_label <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(fruit_data<span class="sc">$</span>fruit_label)</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>fruit_data<span class="sc">$</span>fruit_name <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(fruit_data<span class="sc">$</span>fruit_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>This <code>fruit_dataset</code> includes physical characteristics of fruits (mass, width, height, color score). We’ve also converted fruit_label and fruit_name to factor type, which means R will recognize these variables as categorical data.</p>
 </section>
 <section id="data-exploration" class="level4">
 <h4 class="anchored" data-anchor-id="data-exploration">Data Exploration</h4>
@@ -243,7 +319,7 @@ Attaching package: 'dplyr'</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="KNN_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="KNN_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -279,7 +355,7 @@ Attaching package: 'dplyr'</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="KNN_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="KNN_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -332,7 +408,7 @@ Class: 4     4         1      1  1</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="KNN_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="KNN_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -380,7 +456,7 @@ converged</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="KNN_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="KNN_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -425,7 +501,7 @@ converged</code></pre>
 </section>
 </section>
 <section id="knn-vs.-k-means" class="level2">
-<h2 class="anchored" data-anchor-id="knn-vs.-k-means">KNN vs.&nbsp;K-Means</h2>
+<h2 class="anchored" data-anchor-id="knn-vs.-k-means">🆚 KNN vs.&nbsp;K-Means</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 18%">
@@ -470,7 +546,7 @@ converged</code></pre>
 <hr>
 </section>
 <section id="strengths-and-limitations" class="level2">
-<h2 class="anchored" data-anchor-id="strengths-and-limitations">Strengths and Limitations</h2>
+<h2 class="anchored" data-anchor-id="strengths-and-limitations">❗ Strengths and Limitations</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 48%">
@@ -500,7 +576,7 @@ converged</code></pre>
 <hr>
 </section>
 <section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<h2 class="anchored" data-anchor-id="conclusion">✅ Conclusion</h2>
 <p>In this module, we explored the K-Nearest Neighbors (KNN) algorithm from its theoretical foundation to practical implementation using a fruit classification task. Through both toy examples and real datasets, we gained a deeper understanding of how similarity-based classification works.</p>
 <section id="key-takeaways" class="level3">
 <h3 class="anchored" data-anchor-id="key-takeaways">Key Takeaways:</h3>
